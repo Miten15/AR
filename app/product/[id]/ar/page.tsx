@@ -7,15 +7,13 @@ import { ArrowLeft, Smartphone, Laptop } from "lucide-react"
 import QRCode from "@/components/qr-code"
 import DeviceDetector from "@/components/device-detector"
 import { WavyBackground } from "@/components/ui/aceternity/wavy-background"
+import { useParams } from "next/navigation"
 
-interface ARViewPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default function ARViewPage({ params }: ARViewPageProps) {
+export default function ARViewPage() {
   const [isMounted, setIsMounted] = useState(false)
+  // Get the product ID using useParams hook instead of the params prop
+  const params = useParams()
+  const productId = Array.isArray(params.id) ? params.id[0] : params.id as string
 
   useEffect(() => {
     setIsMounted(true)
@@ -27,13 +25,13 @@ export default function ARViewPage({ params }: ARViewPageProps) {
 
   return (
     <div className="container py-8">
-      <Link href={`/product/${params.id}`} className="inline-flex items-center text-sm font-medium text-blue-600 mb-6">
+      <Link href={`/product/${productId}`} className="inline-flex items-center text-sm font-medium text-blue-600 mb-6">
         <ArrowLeft className="mr-1 h-4 w-4" /> Back to product
       </Link>
 
       <DeviceDetector
-        mobileContent={<MobileARView productId={params.id} />}
-        desktopContent={<DesktopARView productId={params.id} />}
+        mobileContent={<MobileARView productId={productId} />}
+        desktopContent={<DesktopARView productId={productId} />}
       />
     </div>
   )

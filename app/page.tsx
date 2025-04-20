@@ -5,31 +5,18 @@ import { ArrowRight, Scan, CuboidIcon as Cube, Smartphone } from "lucide-react"
 import { WavyBackground } from "@/components/ui/aceternity/wavy-background"
 import { TextGenerateEffect } from "@/components/ui/aceternity/text-generate-effect"
 import { MovingCards } from "@/components/ui/aceternity/moving-cards"
+import { products as productData } from "@/data/products"
 
 export default function Home() {
-  const products = [
-    {
-      id: "1",
-      name: "Track Spot Light",
-      description: "Modern track lighting with adjustable head",
-      image: "/placeholder.svg?height=300&width=300",
-      price: "$129",
-    },
-    {
-      id: "2",
-      name: "Pendant Light",
-      description: "Elegant pendant light for dining areas",
-      image: "/placeholder.svg?height=300&width=300",
-      price: "$149",
-    },
-    {
-      id: "3",
-      name: "Wall Sconce",
-      description: "Contemporary wall sconce with LED lighting",
-      image: "/placeholder.svg?height=300&width=300",
-      price: "$89",
-    },
-  ]
+  // Using the products from our data file
+  // In a production app, you might fetch this data from an external API or database
+  const products = productData.map(product => ({
+    id: product.id,
+    name: product.name,
+    description: product.description,
+    image: product.images[0] || "/placeholder.svg?height=300&width=300",
+    price: `$${product.price.toFixed(2)}`,
+  }));
 
   const testimonials = [
     {

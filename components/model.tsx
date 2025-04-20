@@ -1,32 +1,57 @@
 "use client"
 
-import { useGLTF } from "@react-three/drei"
 import { useEffect, useState } from "react"
-import type { Group } from "three"
+import { useGLTF } from "@react-three/drei"
+import { Product } from "@/data/products"
 
 interface ModelProps {
-  productId?: string
+  productId: string
 }
 
 export default function Model({ productId }: ModelProps) {
-  // Use the provided 3D model
-  const { scene } = useGLTF("/models/track-spot.glb")
-  const [model, setModel] = useState<Group | null>(null)
-
+  const [modelPath, setModelPath] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  
   useEffect(() => {
-    if (scene) {
-      const newScene = scene.clone()
-
-      // Position and scale the model appropriately
-      newScene.scale.set(1, 1, 1)
-      newScene.position.set(0, -0.5, 0)
-      newScene.rotation.set(0, Math.PI / 4, 0) // Rotate to show a good angle
-
-      setModel(newScene)
+    const fetchProduct = async () => {
+      try {
+        setIsLoading(true)
+        const response = await fetch(`/api/products/${productId}`)
+        
+        if (!response.ok) {
+          // Fallback to default model if product not found
+          setModelPath("/models/track-spot.glb")
+          return
+        }
+        
+        const product: Product = await response.json()
+        setModelPath(product.modelPath)
+      } catch (error) {
+        console.error("Error fetching product:", error)
+        // Fallback to default model on error
+        setModelPath("/models/track-spot.glb")
+      } finally {
+        setIsLoading(false)
+      }
     }
-  }, [scene, productId])
-
-  if (!model) return null
-
-  return <primitive object={model} />
+    
+    fetchProduct()
+  }, [productId])
+  
+  // Don't try to load until we have a path
+  if (!modelPath) return null
+  
+  // Dynamic model loading based on product ID
+  // Add cache busting by adding a query parameter with the product ID
+  const { scene } = useGLTF(`${modelPath}?id=${productId}`)
+  
+  return (
+    <primitive 
+      object={scene} 
+      scale={1} 
+      position={[0, 0, 0]} 
+      rotation={[0, 0, 0]} 
+      key={productId} // Add a key to force re-render when product changes
+    />
+  )
 }

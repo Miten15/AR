@@ -3,6 +3,8 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, CuboidIcon as Cube, Scan, ShoppingCart } from "lucide-react"
 import { Spotlight } from "@/components/ui/aceternity/spotlight"
+import { Product, getProductById } from "@/data/products"
+import { notFound } from "next/navigation"
 
 interface ProductPageProps {
   params: {
@@ -10,25 +12,21 @@ interface ProductPageProps {
   }
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
-  // In a real app, you would fetch this data from an API or database
-  const product = {
-    id: params.id,
-    name: "Track Spot Light",
-    description:
-      "Experience premium lighting with our Track Spot Light. Designed for versatility and style, this adjustable light fixture adds a modern touch to any space while providing focused illumination exactly where you need it.",
-    longDescription:
-      "Our Track Spot Light is crafted from high-quality materials, ensuring durability and longevity. The sleek design complements any interior style, from contemporary to industrial. The adjustable head allows you to direct light precisely where needed, making it perfect for highlighting artwork, architectural features, or work areas. Available in multiple finishes to match your existing decor and fixtures.",
-    image: "/placeholder.svg?height=600&width=600",
-    price: "$129",
-    features: [
-      "Adjustable head for directional lighting",
-      "Energy-efficient LED bulb included",
-      "Easy installation on standard track systems",
-      "Dimmable with compatible switches",
-      "2-year warranty",
-    ],
+// This function will be executed on the server
+async function getProduct(id: string): Promise<Product> {
+  // When running on the server, we can directly use the getProductById function
+  // In a real app with a database, you'd make a database query here
+  const product = getProductById(id)
+  
+  if (!product) {
+    notFound()
   }
+  
+  return product
+}
+
+export default async function ProductPage({ params }: ProductPageProps) {
+  const product = await getProduct(params.id)
 
   return (
     <div className="container py-8">
@@ -38,11 +36,16 @@ export default function ProductPage({ params }: ProductPageProps) {
       <Spotlight className="rounded-md">
         <div className="grid md:grid-cols-2 gap-8 p-8">
           <div className="relative aspect-square rounded-lg overflow-hidden border">
-            <Image src={product.image || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
+            <Image 
+              src={product.images[0] || "/placeholder.svg"} 
+              alt={product.name} 
+              fill 
+              className="object-cover" 
+            />
           </div>
           <div className="flex flex-col">
             <h1 className="text-3xl font-bold">{product.name}</h1>
-            <p className="text-2xl font-bold mt-2 mb-4">{product.price}</p>
+            <p className="text-2xl font-bold mt-2 mb-4">${product.price.toFixed(2)}</p>
             <p className="text-muted-foreground mb-4">{product.description}</p>
             <div className="grid gap-4 mb-6">
               <h3 className="font-semibold">Features:</h3>
@@ -52,7 +55,6 @@ export default function ProductPage({ params }: ProductPageProps) {
                 ))}
               </ul>
             </div>
-            <p className="text-muted-foreground mb-6">{product.longDescription}</p>
             <div className="flex flex-col sm:flex-row gap-4 mt-auto">
               <Button className="flex-1 bg-gradient-to-r from-blue-600 to-violet-500 hover:from-blue-700 hover:to-violet-600">
                 <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
