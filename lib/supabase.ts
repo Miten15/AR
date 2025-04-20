@@ -1,9 +1,17 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize the Supabase client
-// In a real application, these values would be stored in environment variables
-// Replace these with your actual Supabase URL and anon key after creating your project
-export const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'your-supabase-url';
-export const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-supabase-anon-key';
+// Check if environment variables are properly set
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  console.warn(
+    'Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env.local file or deployment environment.'
+  );
+}
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Initialize the Supabase client with environment variables
+export const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+export const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+// Only create the client if both values are provided
+export const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;

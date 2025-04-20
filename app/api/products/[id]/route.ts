@@ -6,7 +6,16 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get the ID from params - no need to await params.id in this case
+    // Check if supabase client is properly initialized
+    if (!supabase) {
+      console.error('Supabase client not initialized - missing environment variables');
+      return NextResponse.json(
+        { error: 'Database configuration error' },
+        { status: 500 }
+      );
+    }
+
+    // Get the ID from params
     const { id } = params;
     
     // Query a specific product from Supabase

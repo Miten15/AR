@@ -3,6 +3,15 @@ import { supabase } from '@/lib/supabase';
 
 export async function GET() {
   try {
+    // Check if supabase client is properly initialized
+    if (!supabase) {
+      console.error('Supabase client not initialized - missing environment variables');
+      return NextResponse.json(
+        { error: 'Database configuration error' },
+        { status: 500 }
+      );
+    }
+
     // Query products from Supabase
     const { data: dbProducts, error } = await supabase
       .from('products')
