@@ -19,12 +19,14 @@ export default function Model({ productId }: ModelProps) {
         const response = await fetch(`/api/products/${productId}`)
         
         if (!response.ok) {
+          console.error("Product not found", productId);
           // Fallback to default model if product not found
           setModelPath("/models/track-spot.glb")
           return
         }
         
         const product: Product = await response.json()
+        console.log("Loaded model path:", product.modelPath, "for product:", productId);
         setModelPath(product.modelPath)
       } catch (error) {
         console.error("Error fetching product:", error)
@@ -41,9 +43,9 @@ export default function Model({ productId }: ModelProps) {
   // Don't try to load until we have a path
   if (!modelPath) return null
   
-  // Dynamic model loading based on product ID
-  // Add cache busting by adding a query parameter with the product ID
-  const { scene } = useGLTF(`${modelPath}?id=${productId}`)
+  // Clear the cache for the model to ensure we load the correct one
+  useGLTF.preload(modelPath)
+  const { scene } = useGLTF(modelPath, true) // Force reload with true
   
   return (
     <primitive 
@@ -51,7 +53,7 @@ export default function Model({ productId }: ModelProps) {
       scale={1} 
       position={[0, 0, 0]} 
       rotation={[0, 0, 0]} 
-      key={productId} // Add a key to force re-render when product changes
+      key={`${productId}-${modelPath}`} // Better key to force re-render
     />
   )
 }

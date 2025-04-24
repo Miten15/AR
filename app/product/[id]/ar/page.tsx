@@ -25,7 +25,7 @@ export default function ARViewPage() {
 
   return (
     <div className="container py-8">
-      <Link href={`/product/${productId}`} className="inline-flex items-center text-sm font-medium text-blue-600 mb-6">
+      <Link href={`/product/${productId}`} className="inline-flex items-center text-sm font-medium text-blue-400 hover:text-blue-300 mb-6">
         <ArrowLeft className="mr-1 h-4 w-4" /> Back to product
       </Link>
 
@@ -62,14 +62,14 @@ function MobileARView({ productId }: { productId: string }) {
   }, [isIOS, modelUrl, productId])
 
   return (
-    <WavyBackground className="max-w-4xl mx-auto py-12" colors={["#6366f1", "#8b5cf6", "#d946ef"]}>
+    <WavyBackground className="max-w-4xl mx-auto py-12" colors={["#3b82f6", "#8b5cf6", "#d946ef"]} waveOpacity={0.3}>
       <div className="flex flex-col items-center justify-center py-12">
-        <Smartphone className="h-16 w-16 text-white mb-4" />
+        <Smartphone className="h-16 w-16 text-blue-400 mb-4" />
         <h1 className="text-2xl font-bold mb-2 text-white">Launching AR Viewer</h1>
-        <p className="text-center text-white/80 mb-6">
+        <p className="text-center text-slate-300 mb-6">
           The AR viewer should launch automatically. If it doesn't, your device may not support AR viewing.
         </p>
-        <Button asChild variant="secondary">
+        <Button asChild variant="secondary" className="bg-slate-800 hover:bg-slate-700 text-slate-200">
           <Link href={`/product/${productId}/3d`}>View 3D Model Instead</Link>
         </Button>
       </div>
@@ -79,28 +79,30 @@ function MobileARView({ productId }: { productId: string }) {
 
 function DesktopARView({ productId }: { productId: string }) {
   return (
-    <WavyBackground className="max-w-4xl mx-auto py-12" colors={["#6366f1", "#8b5cf6", "#d946ef"]}>
+    <WavyBackground className="max-w-4xl mx-auto py-12" colors={["#3b82f6", "#8b5cf6", "#d946ef"]} waveOpacity={0.3}>
       <div className="flex flex-col items-center text-center max-w-2xl mx-auto py-12">
-        <Laptop className="h-16 w-16 text-white mb-4" />
+        <Laptop className="h-16 w-16 text-blue-400 mb-4" />
         <h1 className="text-3xl font-bold mb-4 text-white">Scan with your phone to view in AR</h1>
-        <p className="text-white/80 mb-8">
+        <p className="text-slate-300 mb-8">
           Use your smartphone's camera to scan the QR code below. This will open an AR viewer on your phone where you
           can see this product in your space.
         </p>
 
-        <div className="bg-white p-8 rounded-xl shadow-lg mb-8">
-          <QRCode
-            value={`${typeof window !== "undefined" ? window.location.origin : ""}/product/${productId}/ar`}
-            size={250}
-          />
-          <p className="mt-4 font-medium">Scan to view in AR</p>
+        <div className="bg-slate-900 border border-slate-700 p-8 rounded-xl shadow-lg mb-8">
+          <div className="bg-white p-4 rounded-lg">
+            <QRCode
+              value={`${typeof window !== "undefined" ? window.location.origin : ""}/product/${productId}/ar`}
+              size={250}
+            />
+          </div>
+          <p className="mt-4 font-medium text-slate-200">Scan to view in AR</p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <Button asChild variant="secondary">
+          <Button asChild variant="secondary" className="bg-slate-800 hover:bg-slate-700 text-slate-200">
             <Link href={`/product/${productId}`}>Back to Product Details</Link>
           </Button>
-          <Button asChild>
+          <Button asChild className="bg-gradient-to-r from-blue-600 to-violet-500 hover:from-blue-700 hover:to-violet-600">
             <Link href={`/product/${productId}/3d`}>View 3D Model Instead</Link>
           </Button>
         </div>

@@ -42,29 +42,31 @@ export default function Home() {
   ]
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="flex flex-col min-h-screen bg-slate-950 text-slate-200">
+      <header className="sticky top-0 z-40 w-full border-b border-slate-800 bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-slate-950/60">
         <div className="container flex h-16 items-center">
           <div className="mr-4 flex">
             <Link href="/" className="flex items-center space-x-2">
-              <span className="font-bold text-2xl bg-gradient-to-r from-blue-600 to-violet-500 text-transparent bg-clip-text">
+              <span className="font-bold text-2xl bg-gradient-to-r from-blue-400 to-violet-400 text-transparent bg-clip-text">
                 LightAR
               </span>
             </Link>
           </div>
           <nav className="flex items-center space-x-6 text-sm font-medium flex-1 justify-center">
-            <Link href="/" className="transition-colors hover:text-foreground/80 text-foreground">
+            <Link href="/" className="transition-colors hover:text-blue-400 text-slate-200">
               Products
             </Link>
-            <Link href="/how-it-works" className="transition-colors hover:text-foreground/80 text-foreground/60">
+            <Link href="/how-it-works" className="transition-colors hover:text-blue-400 text-slate-400">
               How It Works
             </Link>
-            <Link href="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
+            <Link href="/about" className="transition-colors hover:text-blue-400 text-slate-400">
               About
             </Link>
           </nav>
           <div className="flex items-center space-x-4">
-            <Button variant="default">Get Started</Button>
+            <Button variant="default" className="bg-gradient-to-r from-blue-600 to-violet-500 hover:from-blue-700 hover:to-violet-600">
+              Get Started
+            </Button>
           </div>
         </div>
       </header>
@@ -72,7 +74,8 @@ export default function Home() {
         <WavyBackground
           className="max-w-4xl mx-auto pb-40"
           containerClassName="w-full min-h-screen relative"
-          colors={["#6366f1", "#8b5cf6", "#d946ef"]}
+          colors={["#3b82f6", "#8b5cf6", "#d946ef"]}
+          waveOpacity={0.3}
         >
           <section className="w-full py-12 md:py-24 lg:py-32">
             <div className="container px-4 md:px-6">
@@ -81,9 +84,9 @@ export default function Home() {
                   <div className="space-y-2">
                     <TextGenerateEffect
                       words="Experience Lighting in Your Space Before You Buy"
-                      className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
+                      className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-white"
                     />
-                    <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                    <p className="max-w-[600px] text-slate-300 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                       Scan the QR code with your phone to see our lighting products in your space with augmented
                       reality. No app required.
                     </p>
@@ -98,7 +101,7 @@ export default function Home() {
                         View Products <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
                     </Button>
-                    <Button asChild size="lg" variant="outline">
+                    <Button asChild size="lg" variant="outline" className="border-blue-500 text-blue-400 hover:text-blue-300 hover:bg-blue-950">
                       <Link href="/how-it-works">Learn More</Link>
                     </Button>
                   </div>
@@ -107,7 +110,7 @@ export default function Home() {
                   <div className="relative w-[300px] h-[600px] overflow-hidden rounded-xl border-8 border-black bg-black">
                     <div className="absolute inset-0 rounded-lg overflow-hidden">
                       <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-                        <div className="bg-white p-4 rounded-xl shadow-lg">
+                        <div className="bg-slate-900 p-4 rounded-xl shadow-lg">
                           <div className="w-48 h-48 relative">
                             <div className="absolute inset-0 flex items-center justify-center">
                               <div className="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center">
@@ -120,7 +123,7 @@ export default function Home() {
                               ))}
                             </div>
                           </div>
-                          <div className="text-center mt-2 text-sm font-medium">Scan to view in AR</div>
+                          <div className="text-center mt-2 text-sm font-medium text-slate-200">Scan to view in AR</div>
                         </div>
                       </div>
                     </div>
@@ -131,45 +134,45 @@ export default function Home() {
           </section>
         </WavyBackground>
 
-        <section className="w-full py-12 md:py-24 bg-gray-50">
+        <section className="w-full py-12 md:py-24 bg-slate-900">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">
+                <div className="inline-block rounded-lg bg-slate-800 px-3 py-1 text-sm text-blue-400">
                   How It Works
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">See Before You Buy</h2>
-                <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-white">See Before You Buy</h2>
+                <p className="max-w-[900px] text-slate-300 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   Our AR technology lets you visualize our lighting products in your space with just a smartphone
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="flex flex-col items-center text-center p-6 rounded-lg border bg-white shadow-sm">
-                <div className="bg-blue-100 p-4 rounded-full mb-4">
-                  <Scan className="h-8 w-8 text-blue-600" />
+              <div className="flex flex-col items-center text-center p-6 rounded-lg border border-slate-700 bg-slate-800 shadow-lg">
+                <div className="bg-blue-900/30 p-4 rounded-full mb-4">
+                  <Scan className="h-8 w-8 text-blue-400" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">1. Scan QR Code</h3>
-                <p className="text-gray-500">Use your smartphone camera to scan the QR code on the product page</p>
+                <h3 className="text-xl font-bold mb-2 text-white">1. Scan QR Code</h3>
+                <p className="text-slate-300">Use your smartphone camera to scan the QR code on the product page</p>
               </div>
 
-              <div className="flex flex-col items-center text-center p-6 rounded-lg border bg-white shadow-sm">
-                <div className="bg-blue-100 p-4 rounded-full mb-4">
-                  <Smartphone className="h-8 w-8 text-blue-600" />
+              <div className="flex flex-col items-center text-center p-6 rounded-lg border border-slate-700 bg-slate-800 shadow-lg">
+                <div className="bg-blue-900/30 p-4 rounded-full mb-4">
+                  <Smartphone className="h-8 w-8 text-blue-400" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">2. Open AR Viewer</h3>
-                <p className="text-gray-500">
+                <h3 className="text-xl font-bold mb-2 text-white">2. Open AR Viewer</h3>
+                <p className="text-slate-300">
                   Your phone will automatically open the AR viewer - no app download needed
                 </p>
               </div>
 
-              <div className="flex flex-col items-center text-center p-6 rounded-lg border bg-white shadow-sm">
-                <div className="bg-blue-100 p-4 rounded-full mb-4">
-                  <Cube className="h-8 w-8 text-blue-600" />
+              <div className="flex flex-col items-center text-center p-6 rounded-lg border border-slate-700 bg-slate-800 shadow-lg">
+                <div className="bg-blue-900/30 p-4 rounded-full mb-4">
+                  <Cube className="h-8 w-8 text-blue-400" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">3. View in Your Space</h3>
-                <p className="text-gray-500">
+                <h3 className="text-xl font-bold mb-2 text-white">3. View in Your Space</h3>
+                <p className="text-slate-300">
                   See the lighting product in your space at actual size and from all angles
                 </p>
               </div>
@@ -177,13 +180,13 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="products" className="w-full py-12 md:py-24">
+        <section id="products" className="w-full py-12 md:py-24 bg-slate-950">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">Products</div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Our Lighting Collection</h2>
-                <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                <div className="inline-block rounded-lg bg-slate-800 px-3 py-1 text-sm text-blue-400">Products</div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-white">Our Lighting Collection</h2>
+                <p className="max-w-[900px] text-slate-300 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   Browse our collection and view them in your space with AR technology
                 </p>
               </div>
@@ -196,30 +199,30 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="w-full py-12 md:py-24 bg-gray-50">
+        <section className="w-full py-12 md:py-24 bg-slate-900">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-8">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">
+                <div className="inline-block rounded-lg bg-slate-800 px-3 py-1 text-sm text-blue-400">
                   Testimonials
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">What Our Customers Say</h2>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-white">What Our Customers Say</h2>
               </div>
             </div>
             <MovingCards items={testimonials} direction="right" speed="slow" />
           </div>
         </section>
       </main>
-      <footer className="w-full border-t py-6 md:py-0">
+      <footer className="w-full border-t border-slate-800 py-6 md:py-0 bg-slate-950">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
-          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
+          <p className="text-center text-sm leading-loose text-slate-400 md:text-left">
             © 2025 LightAR. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <Link href="/terms" className="text-sm text-muted-foreground underline-offset-4 hover:underline">
+            <Link href="/terms" className="text-sm text-slate-400 underline-offset-4 hover:text-blue-400 hover:underline">
               Terms
             </Link>
-            <Link href="/privacy" className="text-sm text-muted-foreground underline-offset-4 hover:underline">
+            <Link href="/privacy" className="text-sm text-slate-400 underline-offset-4 hover:text-blue-400 hover:underline">
               Privacy
             </Link>
           </div>

@@ -29,7 +29,7 @@ export default function ThreeDViewPage() {
   if (!isMounted) {
     return (
       <div className="container py-8">
-        <div className="w-full h-[calc(100vh-200px)] min-h-[500px] bg-gray-50 rounded-lg flex items-center justify-center">
+        <div className="w-full h-[calc(100vh-200px)] min-h-[500px] bg-slate-900 dark:bg-slate-800 rounded-lg flex items-center justify-center">
           <p>Loading 3D model...</p>
         </div>
       </div>
@@ -39,17 +39,17 @@ export default function ThreeDViewPage() {
   return (
     <div className="container py-8">
       <div className="flex justify-between items-center mb-6">
-        <Link href={`/product/${id}`} className="inline-flex items-center text-sm font-medium text-blue-600">
+        <Link href={`/product/${id}`} className="inline-flex items-center text-sm font-medium text-blue-400 hover:text-blue-300">
           <ArrowLeft className="mr-1 h-4 w-4" /> Back to product
         </Link>
-        <Button variant="outline" asChild>
+        <Button variant="outline" asChild className="border-blue-500 text-blue-400 hover:text-blue-300 hover:bg-blue-950">
           <Link href={`/product/${id}/ar`}>
             <Scan className="mr-2 h-4 w-4" /> View in AR
           </Link>
         </Button>
       </div>
 
-      <div className="w-full h-[calc(100vh-200px)] min-h-[500px] bg-gray-50 rounded-lg overflow-hidden">
+      <div className="w-full h-[calc(100vh-200px)] min-h-[500px] bg-slate-900 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-700">
         <Canvas shadows camera={{ position: [0, 0, 5], fov: 50 }}>
           <Suspense fallback={null}>
             <PresentationControls
@@ -63,16 +63,16 @@ export default function ThreeDViewPage() {
             >
               <Model productId={id} />
             </PresentationControls>
-            <Environment preset="apartment" />
-            <ContactShadows position={[0, -1.5, 0]} opacity={0.4} scale={10} blur={1.5} far={2} />
+            <Environment preset="night" />
+            <ContactShadows position={[0, -1.5, 0]} opacity={0.6} scale={10} blur={1.5} far={2} />
           </Suspense>
           <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} />
         </Canvas>
       </div>
 
       <div className="mt-6">
-        <h1 className="text-2xl font-bold mb-2">{productName} - 3D View</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl font-bold mb-2 text-white">{productName} - 3D View</h1>
+        <p className="text-slate-300">
           Interact with the 3D model by dragging to rotate, scrolling to zoom, and right-clicking to pan.
         </p>
       </div>

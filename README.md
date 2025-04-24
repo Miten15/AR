@@ -106,3 +106,45 @@ To use the AR feature:
 4. When prompted, grant camera permission
 5. Point your camera at a flat surface
 6. The 3D model will appear in your space
+
+# 3D Model Loading System
+
+This system loads 3D models from a backend API with fallback to open source models if there are any issues.
+
+## Setup
+
+1. Install dependencies:
+```
+npm install three node-fetch form-data
+```
+
+2. Download some open source 3D models (GLB/GLTF format) and place them in a `fallback-models` directory
+
+3. Edit the backend API URL in:
+   - `services/modelService.js`
+   - `scripts/uploadFallbackModels.js`
+
+## Usage
+
+1. Upload fallback models to the backend:
+```
+node scripts/uploadFallbackModels.js
+```
+
+2. Use the ModelViewer component in your application:
+```jsx
+import ModelViewer from './components/ModelViewer';
+
+function App() {
+  return <ModelViewer modelId="car" />;
+}
+```
+
+## Supported Models
+
+The system includes fallback models for:
+- car
+- house
+- character
+
+Add more as needed in the `fallbackModels` object in `services/modelService.js` and in the `modelsToUpload` array in `scripts/uploadFallbackModels.js`.
