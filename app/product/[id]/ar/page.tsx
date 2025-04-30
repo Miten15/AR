@@ -41,22 +41,35 @@ export default function ARViewPage({ params }: ARViewPageProps) {
 }
 
 function MobileARView({ productId }: { productId: string }) {
+  const [showLoader, setShowLoader] = useState(true);
   // Detect iOS vs Android
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
 
   useEffect(() => {
-    // For iOS devices, we would use AR Quick Look with USDZ files
-    if (isIOS) {
-      // In a real app, you'd use a USDZ file here with anchor="fixed" parameter
-      // For demo purposes, we'll just redirect to the 3D view
-      window.location.href = `/product/${productId}/3d`
-    } else {
-      // For Android, we use Scene Viewer with GLB files
-      // Add the 'mode=ar_preferred&resizable=false&disable_occlusion=true' parameters to keep model fixed
-      const modelUrlWithOrigin = `${window.location.origin}/models/track-spot.glb`
-      window.location.href = `intent://arvr.google.com/scene-viewer/1.0?file=${modelUrlWithOrigin}&mode=ar_preferred&resizable=false&disable_occlusion=true#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${window.location.origin}/product/${productId}/3d;end;`
-    }
-  }, [isIOS, productId])
+    // Show loader for 2.5 seconds, then launch AR
+    const timer = setTimeout(() => {
+      setShowLoader(false);
+      if (isIOS) {
+        window.location.href = `/product/${productId}/3d`
+      } else {
+        const modelUrlWithOrigin = `${window.location.origin}/models/track-spot.glb`
+        window.location.href = `intent://arvr.google.com/scene-viewer/1.0?file=${modelUrlWithOrigin}&mode=ar_preferred&resizable=true&disable_occlusion=true#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${window.location.origin}/product/${productId}/3d;end;`
+      }
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, [isIOS, productId]);
+
+  if (showLoader) {
+    return (
+      <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black bg-opacity-80">
+        <div className="mb-6">
+          <img src="/images/true-logo.svg" alt="TRUE LED LIGHTS" className="w-24 h-24" />
+        </div>
+        <h1 className="text-2xl font-bold text-white mb-2">Launching AR Viewer...</h1>
+        <p className="text-white/80">Please wait while we launch the AR experience.</p>
+      </div>
+    );
+  }
 
   return (
     <WavyBackground className="max-w-4xl mx-auto py-12" colors={["#6366f1", "#8b5cf6", "#d946ef"]}>
@@ -72,7 +85,7 @@ function MobileARView({ productId }: { productId: string }) {
       </div>
       <ARWatermark position="bottom-right" size="medium" />
     </WavyBackground>
-  )
+  );
 }
 
 function DesktopARView({ productId }: { productId: string }) {

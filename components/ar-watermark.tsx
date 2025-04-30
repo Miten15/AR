@@ -39,8 +39,8 @@ export default function ARWatermark({ position = "bottom-right", size = "medium"
     <div
       className={`fixed ${positionClasses[position]} z-50 transition-opacity duration-500 ${isVisible ? "opacity-80" : "opacity-0"}`}
     >
-      <div className={`relative ${sizeClasses[size]}`}>
-        <Image src="/images/true-logo.svg" alt="TRUE LED LIGHTS" fill className="object-contain" />
+      <div className={`relative ${sizeClasses[size]} bg-black bg-opacity-50 rounded p-2`}> // Added background for visibility
+        <Image src="/images/true-logo.svg" alt="TRUE LED LIGHTS" fill className="object-contain" style={{ opacity: 1 }} /> // Set opacity to 1
       </div>
     </div>
   )
