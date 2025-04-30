@@ -1,81 +1,53 @@
 "use client"
 
-import { Suspense, useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Scan } from "lucide-react"
-import { Canvas } from "@react-three/fiber"
-import { OrbitControls, PresentationControls, Environment, ContactShadows } from "@react-three/drei"
-import Model from "@/components/model"
-import { useParams } from "next/navigation"
-import { getProductById } from "@/data/products"
+import ModelViewer from "@/components/model-viewer"
+import { useEffect, useState } from "react"
+import RelatedProducts from "@/components/related-products"
 
-export default function ThreeDViewPage() {
-  const params = useParams()
-  const id = Array.isArray(params.id) ? params.id[0] : params.id as string
-  
-  // Make sure the component is mounted before rendering the canvas
+interface ThreeDViewPageProps {
+  params: {
+    id: string
+  }
+}
+
+export default function ThreeDViewPage({ params }: ThreeDViewPageProps) {
   const [isMounted, setIsMounted] = useState(false)
-  const [productName, setProductName] = useState("Product")
-  
+
   useEffect(() => {
     setIsMounted(true)
-    const product = getProductById(id)
-    if (product) {
-      setProductName(product.name)
-    }
-  }, [id])
-  
+  }, [])
+
   if (!isMounted) {
-    return (
-      <div className="container py-8">
-        <div className="w-full h-[calc(100vh-200px)] min-h-[500px] bg-slate-900 dark:bg-slate-800 rounded-lg flex items-center justify-center">
-          <p>Loading 3D model...</p>
-        </div>
-      </div>
-    )
+    return null
   }
 
   return (
     <div className="container py-8">
       <div className="flex justify-between items-center mb-6">
-        <Link href={`/product/${id}`} className="inline-flex items-center text-sm font-medium text-blue-400 hover:text-blue-300">
+        <Link href={`/product/${params.id}`} className="inline-flex items-center text-sm font-medium text-blue-600">
           <ArrowLeft className="mr-1 h-4 w-4" /> Back to product
         </Link>
-        <Button variant="outline" asChild className="border-blue-500 text-blue-400 hover:text-blue-300 hover:bg-blue-950">
-          <Link href={`/product/${id}/ar`}>
+        <Button variant="outline" asChild>
+          <Link href={`/product/${params.id}/ar`}>
             <Scan className="mr-2 h-4 w-4" /> View in AR
           </Link>
         </Button>
       </div>
 
-      <div className="w-full h-[calc(100vh-200px)] min-h-[500px] bg-slate-900 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-700">
-        <Canvas shadows camera={{ position: [0, 0, 5], fov: 50 }}>
-          <Suspense fallback={null}>
-            <PresentationControls
-              global
-              rotation={[0, 0, 0]}
-              polar={[-Math.PI / 4, Math.PI / 4]}
-              azimuth={[-Math.PI / 4, Math.PI / 4]}
-              speed={1.5}
-              zoom={0.5}
-              snap={true}
-            >
-              <Model productId={id} />
-            </PresentationControls>
-            <Environment preset="night" />
-            <ContactShadows position={[0, -1.5, 0]} opacity={0.6} scale={10} blur={1.5} far={2} />
-          </Suspense>
-          <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} />
-        </Canvas>
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold mb-4">Track Spot Light - 3D View</h1>
+        <p className="text-muted-foreground mb-6">
+          Interact with the 3D model by dragging to rotate, scrolling to zoom, and right-clicking to pan. The model will
+          automatically rotate to give you a complete view.
+        </p>
+
+        <ModelViewer modelPath="/models/track-spot.glb" autoRotate showWatermark={true} />
       </div>
 
-      <div className="mt-6">
-        <h1 className="text-2xl font-bold mb-2 text-white">{productName} - 3D View</h1>
-        <p className="text-slate-300">
-          Interact with the 3D model by dragging to rotate, scrolling to zoom, and right-clicking to pan.
-        </p>
-      </div>
+      <RelatedProducts currentProductId={params.id} />
     </div>
   )
 }

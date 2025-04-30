@@ -1,11 +1,14 @@
-import type { Metadata } from 'next'
-import './globals.css'
-import { ThemeProvider } from '@/components/theme-provider'
+import type React from "react"
+import "@/app/globals.css"
+import { Inter } from "next/font/google"
+import { ThemeProvider } from "@/components/theme-provider"
 
-export const metadata: Metadata = {
-  title: 'Modern Lighting - 3D Product Showcase',
-  description: 'Explore our lighting products in 3D and AR',
-  generator: 'v0.dev',
+const inter = Inter({ subsets: ["latin"] })
+
+export const metadata = {
+  title: "LightAR - View Lighting Products in AR",
+  description: "Experience lighting products in your space with augmented reality before you buy. No app required.",
+    generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -14,16 +17,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-background font-sans antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-        >
-          <div className="relative flex min-h-screen flex-col">
-            {children}
-          </div>
+    <html lang="en">
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          {children}
         </ThemeProvider>
       </body>
     </html>
