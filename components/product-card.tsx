@@ -7,14 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { CuboidIcon as Cube, Scan } from "lucide-react"
 import { CardContainer, CardBody, CardItem } from "@/components/ui/aceternity/3d-card"
 import MiniModelViewer from "@/components/mini-model-viewer"
-
-interface Product {
-  id: string
-  name: string
-  description: string
-  image: string
-  price: string
-}
+import { Product } from "@/lib/data/products"
 
 interface ProductCardProps {
   product: Product
@@ -24,28 +17,38 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <CardContainer className="w-full">
       <CardBody className="w-full h-auto relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl p-0">
-        <Card className="w-full overflow-hidden border-0 shadow-none">
-          <CardHeader className="p-0">
+        <Card className="w-full overflow-hidden border-0 shadow-none flex flex-col">
+          <CardHeader className="p-0 relative">
             <CardItem translateZ="100" className="w-full">
               <div className="relative aspect-square">
-                <Image src={product.image || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
+                <Image src={product.image || "/placeholder.svg"} alt={product.name} fill className="object-cover rounded-t-xl" />
               </div>
             </CardItem>
+            {/* Optional: Overlay AR button on image if desired for extreme compactness */}
+            {/* <CardItem translateZ="120" className="absolute bottom-2 right-2">
+              <Button variant="outline" size="sm" asChild>
+                <Link href={`/product/${product.id}/ar`}>
+                  <Scan className="mr-1 h-3 w-3" /> AR
+                </Link>
+              </Button>
+            </CardItem> */}
           </CardHeader>
-          <CardContent className="p-6 pt-4">
+          <CardContent className="p-4 flex-grow">
             <CardItem translateZ="50" className="w-full">
-              <CardTitle className="text-xl mb-2">{product.name}</CardTitle>
-              <p className="text-muted-foreground">{product.description}</p>
-              <p className="font-bold text-lg mt-2">{product.price}</p>
+              <CardTitle className="text-lg mb-1 truncate" title={product.name}>{product.name}</CardTitle>
+              <p className="text-sm text-muted-foreground line-clamp-2 mb-2" title={product.description}>{product.description}</p>
+              <p className="font-bold text-md">{product.price}</p>
             </CardItem>
-            <CardItem translateZ="80" className="w-full mt-4">
+            {/* MiniModelViewer can be placed here if still desired, or removed for max compactness */}
+            {/* <CardItem translateZ="80" className="w-full mt-3">
               <MiniModelViewer modelPath="/models/track-spot.glb" />
-            </CardItem>
+            </CardItem> */}
           </CardContent>
-          <CardFooter className="flex flex-col gap-2 p-6 pt-0">
+          <CardFooter className="flex flex-col gap-2 p-4 pt-0 mt-auto">
             <CardItem translateZ="100" className="w-full">
               <Button
                 asChild
+                size="sm"
                 className="w-full bg-gradient-to-r from-blue-600 to-violet-500 hover:from-blue-700 hover:to-violet-600"
               >
                 <Link href={`/product/${product.id}`}>
@@ -54,7 +57,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               </Button>
             </CardItem>
             <CardItem translateZ="100" className="w-full">
-              <Button variant="outline" asChild className="w-full">
+              <Button variant="outline" size="sm" asChild className="w-full">
                 <Link href={`/product/${product.id}/ar`}>
                   <Scan className="mr-2 h-4 w-4" /> View in AR
                 </Link>

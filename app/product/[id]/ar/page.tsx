@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, use } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Smartphone, Laptop } from "lucide-react"
@@ -10,13 +10,14 @@ import { WavyBackground } from "@/components/ui/aceternity/wavy-background"
 import ARWatermark from "@/components/ar-watermark"
 
 interface ARViewPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default function ARViewPage({ params }: ARViewPageProps) {
   const [isMounted, setIsMounted] = useState(false)
+  const { id } = use(params)
 
   useEffect(() => {
     setIsMounted(true)
@@ -28,13 +29,13 @@ export default function ARViewPage({ params }: ARViewPageProps) {
 
   return (
     <div className="container py-8">
-      <Link href={`/product/${params.id}`} className="inline-flex items-center text-sm font-medium text-blue-600 mb-6">
+      <Link href={`/product/${id}`} className="inline-flex items-center text-sm font-medium text-blue-600 mb-6">
         <ArrowLeft className="mr-1 h-4 w-4" /> Back to product
       </Link>
 
       <DeviceDetector
-        mobileContent={<MobileARView productId={params.id} />}
-        desktopContent={<DesktopARView productId={params.id} />}
+        mobileContent={<MobileARView productId={id} />}
+        desktopContent={<DesktopARView productId={id} />}
       />
     </div>
   )

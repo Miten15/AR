@@ -5,32 +5,12 @@ import { ArrowRight, Scan, CuboidIcon as Cube, Smartphone } from "lucide-react"
 import { WavyBackground } from "@/components/ui/aceternity/wavy-background"
 import { TextGenerateEffect } from "@/components/ui/aceternity/text-generate-effect"
 import { MovingCards } from "@/components/ui/aceternity/moving-cards"
+import { ProductService } from "@/lib/services/product-service"
 import Image from "next/image"
 
-export default function Home() {
-  const products = [
-    {
-      id: "1",
-      name: "Track Spot Light",
-      description: "Modern track lighting with adjustable head",
-      image: "/placeholder.svg?height=300&width=300",
-      price: "$129",
-    },
-    {
-      id: "2",
-      name: "Pendant Light",
-      description: "Elegant pendant light for dining areas",
-      image: "/placeholder.svg?height=300&width=300",
-      price: "$149",
-    },
-    {
-      id: "3",
-      name: "Wall Sconce",
-      description: "Contemporary wall sconce with LED lighting",
-      image: "/placeholder.svg?height=300&width=300",
-      price: "$89",
-    },
-  ]
+export default async function Home() {
+  // Fetch featured products from our service
+  const products = await ProductService.getFeaturedProducts(3)
 
   const testimonials = [
     {
@@ -65,8 +45,7 @@ export default function Home() {
                 LightAR
               </span>
             </Link>
-          </div>
-          <nav className="flex items-center space-x-6 text-sm font-medium flex-1 justify-center">
+          </div>          <nav className="flex items-center space-x-6 text-sm font-medium flex-1 justify-center">
             <Link href="/" className="transition-colors hover:text-foreground/80 text-foreground">
               Products
             </Link>
@@ -75,6 +54,12 @@ export default function Home() {
             </Link>
             <Link href="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
               About
+            </Link>
+            <Link href="/test-responsive" className="transition-colors hover:text-foreground/80 text-foreground/60 bg-blue-100 px-2 py-1 rounded text-blue-700">
+              Test Responsive
+            </Link>
+            <Link href="/performance" className="transition-colors hover:text-foreground/80 text-foreground/60 bg-green-100 px-2 py-1 rounded text-green-700">
+              Performance
             </Link>
           </nav>
           <div className="flex items-center space-x-4">
@@ -92,7 +77,7 @@ export default function Home() {
             <div className="container px-4 md:px-6">
               <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
                 <div className="flex flex-col justify-center space-y-4">
-                  <div className="space-y-2">
+                  <div className="space-y-2 text">
                     <TextGenerateEffect
                       words="Experience Lighting in Your Space Before You Buy"
                       className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"

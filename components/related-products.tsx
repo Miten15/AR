@@ -7,45 +7,50 @@ import { Button } from "@/components/ui/button"
 import { Scan, CuboidIcon as Cube } from "lucide-react"
 import { CardContainer, CardBody, CardItem } from "@/components/ui/aceternity/3d-card"
 import ModelViewer from "@/components/model-viewer"
-
-interface RelatedProduct {
-  id: string
-  name: string
-  description: string
-  image: string
-  price: string
-}
+import { Product } from "@/lib/data/products"
+import { ProductService } from "@/lib/services/product-service"
+import { useEffect, useState } from "react"
 
 interface RelatedProductsProps {
   currentProductId: string
 }
 
 export default function RelatedProducts({ currentProductId }: RelatedProductsProps) {
-  // In a real app, you would fetch related products based on the current product
-  // For now, we'll use static data
-  const relatedProducts: RelatedProduct[] = [
-    {
-      id: "2",
-      name: "Pendant Light",
-      description: "Elegant pendant light for dining areas",
-      image: "/placeholder.svg?height=300&width=300",
-      price: "$149",
-    },
-    {
-      id: "3",
-      name: "Wall Sconce",
-      description: "Contemporary wall sconce with LED lighting",
-      image: "/placeholder.svg?height=300&width=300",
-      price: "$89",
-    },
-    {
-      id: "4",
-      name: "Floor Lamp",
-      description: "Modern floor lamp with adjustable height",
-      image: "/placeholder.svg?height=300&width=300",
-      price: "$199",
-    },
-  ].filter((product) => product.id !== currentProductId)
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      try {
+        const products = await ProductService.getRelatedProducts(currentProductId, 3)
+        setRelatedProducts(products)
+      } catch (error) {
+        console.error('Error fetching related products:', error)
+        setRelatedProducts([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchRelatedProducts()
+  }, [currentProductId])
+
+  if (loading) {
+    return (
+      <div className="mt-16">
+        <h2 className="text-2xl font-bold mb-6">Related Products</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="animate-pulse">
+              <div className="bg-gray-300 dark:bg-gray-700 aspect-square rounded-lg mb-4"></div>
+              <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded mb-2"></div>
+              <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded mb-4"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="mt-16">
@@ -65,10 +70,9 @@ export default function RelatedProducts({ currentProductId }: RelatedProductsPro
                         className="object-cover"
                       />
                     </div>
-                  </CardItem>
-                  <CardItem translateZ="50" className="w-full">
+                  </CardItem>                  <CardItem translateZ="50" className="w-full">
                     <div className="h-[200px] w-full">
-                      <ModelViewer modelPath="/models/track-spot.glb" className="h-full" zoom={4} autoRotate />
+                      <ModelViewer modelPath={product.modelPath} className="h-full" zoom={4} autoRotate />
                     </div>
                   </CardItem>
                 </CardContent>
