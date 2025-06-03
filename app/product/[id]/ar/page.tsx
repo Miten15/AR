@@ -8,6 +8,9 @@ import QRCode from "@/components/qr-code"
 import DeviceDetector from "@/components/device-detector"
 import { WavyBackground } from "@/components/ui/aceternity/wavy-background"
 import ARWatermark from "@/components/ar-watermark"
+import { ProductService } from "@/lib/services/product-service"
+import { Product } from "@/lib/data/products"
+import { notFound } from "next/navigation"
 
 interface ARViewPageProps {
   params: Promise<{
@@ -17,31 +20,59 @@ interface ARViewPageProps {
 
 export default function ARViewPage({ params }: ARViewPageProps) {
   const [isMounted, setIsMounted] = useState(false)
+  const [product, setProduct] = useState<Product | null>(null)
+  const [loading, setLoading] = useState(true)
   const { id } = use(params)
 
   useEffect(() => {
     setIsMounted(true)
-  }, [])
+    // Fetch product data
+    const fetchProduct = async () => {
+      try {
+        const productData = await ProductService.getProduct(id)
+        if (!productData) {
+          notFound()
+        }
+        setProduct(productData)
+      } catch (error) {
+        console.error("Error fetching product:", error)
+        notFound()
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchProduct()
+  }, [id])
 
-  if (!isMounted) {
-    return null
+  if (!isMounted || loading) {
+    return (
+      <div className="container py-8 flex justify-center items-center min-h-[50vh]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading AR viewer...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!product) {
+    notFound()
   }
 
   return (
     <div className="container py-8">
       <Link href={`/product/${id}`} className="inline-flex items-center text-sm font-medium text-blue-600 mb-6">
         <ArrowLeft className="mr-1 h-4 w-4" /> Back to product
-      </Link>
-
-      <DeviceDetector
-        mobileContent={<MobileARView productId={id} />}
+      </Link>      <DeviceDetector
+        mobileContent={<MobileARView productId={id} product={product} />}
         desktopContent={<DesktopARView productId={id} />}
       />
     </div>
   )
 }
 
-function MobileARView({ productId }: { productId: string }) {
+function MobileARView({ productId, product }: { productId: string; product: Product }) {
   const [showLoader, setShowLoader] = useState(true);
   // Detect iOS vs Android
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
@@ -53,20 +84,20 @@ function MobileARView({ productId }: { productId: string }) {
       if (isIOS) {
         window.location.href = `/product/${productId}/3d`
       } else {
-        const modelUrlWithOrigin = `${window.location.origin}/models/track-spot.glb`
+        // Use the product's actual model path instead of hardcoded track-spot.glb
+        const modelUrlWithOrigin = `${window.location.origin}${product.modelPath}`
         window.location.href = `intent://arvr.google.com/scene-viewer/1.0?file=${modelUrlWithOrigin}&mode=ar_preferred&resizable=true&disable_occlusion=true#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${window.location.origin}/product/${productId}/3d;end;`
       }
     }, 2500);
     return () => clearTimeout(timer);
-  }, [isIOS, productId]);
+  }, [isIOS, productId, product.modelPath]);
 
   if (showLoader) {
     return (
       <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black bg-opacity-80">
         <div className="mb-6">
           <img src="/images/true-logo.svg" alt="TRUE LED LIGHTS" className="w-24 h-24" />
-        </div>
-        <h1 className="text-2xl font-bold text-white mb-2">Launching AR Viewer...</h1>
+        </div>        <h1 className="text-2xl font-bold text-white mb-2">Launching AR Viewer for {product.name}...</h1>
         <p className="text-white/80">Please wait while we launch the AR experience.</p>
       </div>
     );
@@ -75,8 +106,7 @@ function MobileARView({ productId }: { productId: string }) {
   return (
     <WavyBackground className="max-w-4xl mx-auto py-12" colors={["#6366f1", "#8b5cf6", "#d946ef"]}>
       <div className="flex flex-col items-center justify-center py-12">
-        <Smartphone className="h-16 w-16 text-white mb-4" />
-        <h1 className="text-2xl font-bold mb-2 text-white">Launching AR Viewer</h1>
+        <Smartphone className="h-16 w-16 text-white mb-4" />        <h1 className="text-2xl font-bold mb-2 text-white">Launching AR Viewer for {product.name}</h1>
         <p className="text-center text-white/80 mb-6">
           The AR viewer should launch automatically. If it doesn't, your device may not support AR viewing.
         </p>
