@@ -1,7 +1,5 @@
 "use client"
 
-/// <reference path="../types/model-viewer.d.ts" />
-
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -35,25 +33,14 @@ export default function ARModelViewer({ product, productId, className = "" }: AR
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Dynamically import model-viewer only on the client
+    import('@google/model-viewer');
     const initializeAR = async () => {
       try {
         // Detect AR capabilities
         const caps = await arCapabilityDetector.detectCapabilities()
         setCapabilities(caps)
-        
-        // Load model-viewer if not already loaded
-        if (!window.customElements.get('model-viewer')) {
-          const script = document.createElement('script')
-          script.type = 'module'
-          script.src = 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
-          document.head.appendChild(script)
-          
-          script.onload = () => {
-            setArReady(true)
-          }
-        } else {
-          setArReady(true)
-        }
+        setArReady(true)
       } catch (error) {
         console.error('AR initialization failed:', error)
       } finally {

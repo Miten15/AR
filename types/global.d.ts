@@ -1,8 +1,5 @@
-export {}
+/// <reference path="./model-viewer.d.ts" />
 
-/// <reference types="react" />
-
-// Type definitions for model-viewer web component
 declare global {
   namespace JSX {
     interface IntrinsicElements {
@@ -46,21 +43,9 @@ declare global {
       }
     }
   }
-
   interface Window {
-    customElements: CustomElementRegistry
+    customElements: CustomElementRegistry;
   }
 }
 
-// Model Viewer element interface
-interface ModelViewerElement extends HTMLElement {
-  activateAR(): void
-  dismissPoster(): void
-  resetTurntableRotation(): void
-  getCameraOrbit(): { theta: number; phi: number; radius: number }
-  getCameraTarget(): { x: number; y: number; z: number }
-  jumpCameraToGoal(): void
-  updateFraming(): void
-  toDataURL(type?: string, encoderOptions?: number): string
-  toBlob(options?: { mimeType?: string; qualityArgument?: number; idealAspect?: boolean }): Promise<Blob>
-}
+export {};

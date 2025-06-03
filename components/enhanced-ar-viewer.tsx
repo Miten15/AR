@@ -1,7 +1,5 @@
 "use client"
 
-/// <reference path="../types/model-viewer.d.ts" />
-
 import { useEffect, useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -37,6 +35,8 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
   const modelViewerRef = useRef<any>(null)
 
   useEffect(() => {
+    // Dynamically import model-viewer only on the client
+    import('@google/model-viewer');
     const detectCapabilities = async () => {
       try {
         const caps = await arCapabilityDetector.detectCapabilities()
