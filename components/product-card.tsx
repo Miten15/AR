@@ -32,34 +32,30 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </Link>
               </Button>
             </CardItem> */}
-          </CardHeader>
-          <CardContent className="p-4 flex-grow">
+          </CardHeader>          <CardContent className="p-4 flex-grow">
             <CardItem translateZ="50" className="w-full">
               <CardTitle className="text-lg mb-1 truncate" title={product.name}>{product.name}</CardTitle>
               <p className="text-sm text-muted-foreground line-clamp-2 mb-2" title={product.description}>{product.description}</p>
-              <p className="font-bold text-md">{product.price}</p>
+              <p className="font-bold text-lg">{product.price}</p>
             </CardItem>
-            {/* MiniModelViewer can be placed here if still desired, or removed for max compactness */}
-            {/* <CardItem translateZ="80" className="w-full mt-3">
-              <MiniModelViewer modelPath="/models/track-spot.glb" />
-            </CardItem> */}
-          </CardContent>
-          <CardFooter className="flex flex-col gap-2 p-4 pt-0 mt-auto">
+          </CardContent>          <CardFooter className="flex flex-col gap-2 p-4 pt-0 mt-auto">
             <CardItem translateZ="100" className="w-full">
               <Button
                 asChild
-                size="sm"
                 className="w-full bg-gradient-to-r from-blue-600 to-violet-500 hover:from-blue-700 hover:to-violet-600"
               >
-                <Link href={`/product/${product.id}`}>
-                  <Cube className="mr-2 h-4 w-4" /> View Product
-                </Link>
+                <Link href={`/product/${product.id}`}>View Details</Link>
               </Button>
             </CardItem>
-            <CardItem translateZ="100" className="w-full">
-              <Button variant="outline" size="sm" asChild className="w-full">
+            <CardItem translateZ="100" className="w-full flex gap-2">
+              <Button variant="outline" asChild className="w-1/2">
                 <Link href={`/product/${product.id}/ar`}>
-                  <Scan className="mr-2 h-4 w-4" /> View in AR
+                  <Scan className="mr-2 h-4 w-4" /> AR
+                </Link>
+              </Button>
+              <Button variant="outline" asChild className="w-1/2">
+                <Link href={`/product/${product.id}/3d`}>
+                  <Cube className="mr-2 h-4 w-4" /> 3D
                 </Link>
               </Button>
             </CardItem>
