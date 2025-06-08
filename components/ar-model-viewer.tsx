@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button"
 import { Badge } from '@/components/ui/badge'
 import { 
   Smartphone, 
@@ -33,8 +33,6 @@ export default function ARModelViewer({ product, productId, className = "" }: AR
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Dynamically import model-viewer only on the client
-    import('@google/model-viewer');
     const initializeAR = async () => {
       try {
         // Detect AR capabilities
@@ -99,7 +97,7 @@ export default function ARModelViewer({ product, productId, className = "" }: AR
         ar
         ar-modes="webxr scene-viewer quick-look"
         ar-placement="floor"
-        ar-scale="fixed" // Added ar-scale
+        ar-scale="auto" // Changed from "fixed" to "auto"
         camera-controls
         auto-rotate
         auto-rotate-delay="1000"
