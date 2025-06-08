@@ -1,8 +1,7 @@
 declare global {
   namespace JSX {
-    interface IntrinsicElements {
-      'model-viewer': ModelViewerElementAttributes;
-    }
+    // IntrinsicElements for 'model-viewer' is now primarily defined in model-viewer.d.ts
+    // We keep ModelViewerElementAttributes here for centralized attribute management.
   }
 
   interface ModelViewerElementAttributes extends React.HTMLAttributes<HTMLElement> {
