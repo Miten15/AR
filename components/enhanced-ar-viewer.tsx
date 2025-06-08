@@ -115,10 +115,13 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
             alt={`AR view of ${product.name}`}
             ar
             ar-modes="webxr scene-viewer quick-look"
+            ar-placement="floor"
+            ar-scale="fixed" // Added ar-scale
             camera-controls
             environment-image="neutral"
             poster={product.image}
             shadow-intensity="1"
+            shadow-softness="0.5" // Added shadow-softness
             exposure="1"
             className="w-full h-full"
             style={{ width: '100%', height: '100%' }}

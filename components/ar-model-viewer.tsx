@@ -98,6 +98,8 @@ export default function ARModelViewer({ product, productId, className = "" }: AR
         alt={`AR view of ${product.name}`}
         ar
         ar-modes="webxr scene-viewer quick-look"
+        ar-placement="floor"
+        ar-scale="fixed" // Added ar-scale
         camera-controls
         auto-rotate
         auto-rotate-delay="1000"
@@ -105,6 +107,7 @@ export default function ARModelViewer({ product, productId, className = "" }: AR
         environment-image="neutral"
         poster={product.image}
         shadow-intensity="1"
+        shadow-softness="0.5" // Added shadow-softness
         exposure="1"
         loading="eager"
         reveal="auto"
