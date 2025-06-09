@@ -5,16 +5,19 @@ export {}
 // Type definitions for model-viewer web component
 declare global {
   namespace JSX {
-    interface IntrinsicElements {
-      'model-viewer': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+    interface IntrinsicElements {      'model-viewer': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         src?: string
         alt?: string
         ar?: boolean | string
         'ar-modes'?: string
+        'ar-placement'?: string
+        'ar-scale'?: string
         'camera-controls'?: boolean | string
+        'touch-action'?: string
         'environment-image'?: string
         poster?: string
         'shadow-intensity'?: string | number
+        'shadow-softness'?: string | number
         exposure?: string | number
         'auto-rotate'?: boolean | string
         'auto-rotate-delay'?: string | number
@@ -28,6 +31,7 @@ declare global {
         'field-of-view'?: string
         'min-field-of-view'?: string
         'max-field-of-view'?: string
+        'interaction-prompt'?: string
         interpolation?: string
         scale?: string
         'skybox-image'?: string
@@ -63,4 +67,9 @@ interface ModelViewerElement extends HTMLElement {
   updateFraming(): void
   toDataURL(type?: string, encoderOptions?: number): string
   toBlob(options?: { mimeType?: string; qualityArgument?: number; idealAspect?: boolean }): Promise<Blob>
+  cameraOrbit: string
+  cameraTarget: string
+  autoRotate: boolean
+  autoRotateDelay: number
+  rotationPerSecond: string
 }
