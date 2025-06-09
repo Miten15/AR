@@ -30,8 +30,10 @@ interface EnhancedARViewerProps {
 export default function EnhancedARViewer({ product, productId }: EnhancedARViewerProps) {
   const [capabilities, setCapabilities] = useState<ARCapabilities | null>(null)
   const [loading, setLoading] = useState(true)
-  const [arLaunching, setArLaunching] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [arLaunching, setArLaunching] = useState(false)  const [error, setError] = useState<string | null>(null)
+  const [autoRotate, setAutoRotate] = useState(true)
+  const [showControls, setShowControls] = useState(true)
+  const [showHelp, setShowHelp] = useState(false)
   const modelViewerRef = useRef<any>(null)
 
   useEffect(() => {
@@ -76,7 +78,6 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
       setArLaunching(false)
     }
   }
-
   const activateWebAR = () => {
     // Try to activate AR on the model-viewer if it supports it
     if (modelViewerRef.current && modelViewerRef.current.activateAR) {
@@ -87,9 +88,11 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
   // Model control functions
   const resetModel = () => {
     if (modelViewerRef.current) {
+      // Reset camera position and model rotation
       modelViewerRef.current.resetTurntableRotation()
       modelViewerRef.current.jumpCameraToGoal()
       modelViewerRef.current.cameraOrbit = 'auto auto auto'
+      modelViewerRef.current.cameraTarget = 'auto auto auto'
     }
   }
 
@@ -105,7 +108,6 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
       document.exitFullscreen()
     }
   }
-
   const zoomIn = () => {
     if (modelViewerRef.current) {
       const currentOrbit = modelViewerRef.current.getCameraOrbit()
@@ -121,6 +123,108 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
       modelViewerRef.current.cameraOrbit = `${currentOrbit.theta}rad ${currentOrbit.phi}rad ${newRadius}m`
     }
   }
+
+  const toggleAutoRotate = () => {
+    if (modelViewerRef.current) {
+      const newAutoRotate = !autoRotate
+      setAutoRotate(newAutoRotate)
+      modelViewerRef.current.autoRotate = newAutoRotate
+    }
+  }
+  // Handle model viewer events
+  const handleModelLoad = () => {
+    console.log('Model loaded successfully')
+    if (modelViewerRef.current) {
+      // Ensure the model is interactive and positioned correctly
+      modelViewerRef.current.dismissPoster()
+    }
+  }
+
+  const handleModelError = () => {
+    console.error('Failed to load 3D model')
+    setError('Failed to load 3D model')
+  }
+
+  const toggleControls = () => {
+    setShowControls(!showControls)
+  }
+
+  // Auto-hide controls after 3 seconds of inactivity
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    
+    const resetTimer = () => {
+      clearTimeout(timer)
+      setShowControls(true)
+      timer = setTimeout(() => {
+        setShowControls(false)
+      }, 3000)
+    }
+
+    const handleInteraction = () => {
+      resetTimer()
+    }
+
+    // Add event listeners for user interaction
+    const modelViewer = modelViewerRef.current
+    if (modelViewer) {
+      modelViewer.addEventListener('mousedown', handleInteraction)
+      modelViewer.addEventListener('touchstart', handleInteraction)
+      modelViewer.addEventListener('wheel', handleInteraction)
+    }    // Initial timer
+    resetTimer()
+
+    return () => {
+      clearTimeout(timer)
+      if (modelViewer) {
+        modelViewer.removeEventListener('mousedown', handleInteraction)
+        modelViewer.removeEventListener('touchstart', handleInteraction)
+        modelViewer.removeEventListener('wheel', handleInteraction)
+      }
+    }
+  }, [])
+
+  // Keyboard controls
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!modelViewerRef.current) return
+
+      switch (event.key) {
+        case ' ':
+          event.preventDefault()
+          toggleAutoRotate()
+          break
+        case 'r':
+        case 'R':
+          event.preventDefault()
+          resetModel()
+          break
+        case '+':
+        case '=':
+          event.preventDefault()
+          zoomIn()
+          break
+        case '-':
+        case '_':
+          event.preventDefault()
+          zoomOut()
+          break
+        case 'f':
+        case 'F':
+          event.preventDefault()
+          toggleFullscreen()
+          break
+        case 'h':
+        case 'H':
+          event.preventDefault()
+          toggleControls()
+          break
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [autoRotate, showControls])
 
   if (loading) {
     return <LoadingView />
@@ -144,8 +248,7 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
       {/* Main AR Interface */}
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
         {/* Model Viewer with AR Support */}
-        <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100">
-          <model-viewer
+        <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100">          <model-viewer
             ref={modelViewerRef}
             src={product.modelPath}
             alt={`AR view of ${product.name}`}
@@ -154,17 +257,21 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
             ar-placement="floor"
             ar-scale="auto"
             camera-controls
+            touch-action="pan-y"
             environment-image="neutral"
             poster={product.image}
             shadow-intensity="1"
             shadow-softness="0.5"
             exposure="1"
-            auto-rotate
+            auto-rotate={autoRotate}
             auto-rotate-delay="3000"
             rotation-per-second="30deg"
             min-camera-orbit="auto 0deg auto"
             max-camera-orbit="auto 180deg auto"
             camera-orbit="0deg 75deg 1.5m"
+            interaction-prompt="auto"
+            onLoad={handleModelLoad}
+            onError={handleModelError}
             className="w-full h-full"
             style={{ width: '100%', height: '100%' }}
           />
@@ -178,13 +285,13 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
                 <p className="text-white/80">Preparing {product.name} for AR viewing...</p>
               </div>
             </div>
-          )}
-
-          {/* AR Controls Overlay */}
-          <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
+          )}          {/* AR Controls Overlay */}
+          <div className={`absolute top-4 left-4 right-4 flex justify-between items-start transition-opacity duration-300 ${showControls ? 'opacity-100' : 'opacity-0'}`}>
             <div className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2">
               <p className="text-sm font-medium text-gray-900">{product.name}</p>
-              <p className="text-xs text-gray-600">Drag to rotate • Pinch to zoom</p>
+              <p className="text-xs text-gray-600">
+                Drag to rotate • Pinch to zoom • Use controls below
+              </p>
             </div>
             
             {capabilities.canViewAR && (
@@ -193,14 +300,12 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
                 AR Ready
               </Badge>
             )}
-          </div>
-
-          {/* Bottom Controls */}
-          <div className="absolute bottom-4 left-4 right-4 flex justify-center space-x-3">
+          </div>          {/* Bottom Controls */}
+          <div className={`absolute bottom-4 left-4 right-4 flex justify-center space-x-2 transition-opacity duration-300 ${showControls ? 'opacity-100' : 'opacity-0'}`}>
             <Button
               size="sm"
               variant="secondary"
-              className="bg-white/90 backdrop-blur-sm"
+              className="bg-white/90 backdrop-blur-sm hover:bg-white"
               onClick={resetModel}
             >
               <RotateCcw className="w-4 h-4 mr-1" />
@@ -210,7 +315,17 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
             <Button
               size="sm"
               variant="secondary"
-              className="bg-white/90 backdrop-blur-sm"
+              className="bg-white/90 backdrop-blur-sm hover:bg-white"
+              onClick={toggleAutoRotate}
+            >
+              <RotateCcw className={`w-4 h-4 mr-1 ${autoRotate ? 'animate-spin' : ''}`} />
+              {autoRotate ? 'Stop' : 'Rotate'}
+            </Button>
+
+            <Button
+              size="sm"
+              variant="secondary"
+              className="bg-white/90 backdrop-blur-sm hover:bg-white"
               onClick={zoomIn}
             >
               <ZoomIn className="w-4 h-4 mr-1" />
@@ -220,7 +335,7 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
             <Button
               size="sm"
               variant="secondary"
-              className="bg-white/90 backdrop-blur-sm"
+              className="bg-white/90 backdrop-blur-sm hover:bg-white"
               onClick={zoomOut}
             >
               <ZoomOut className="w-4 h-4 mr-1" />
@@ -230,11 +345,23 @@ export default function EnhancedARViewer({ product, productId }: EnhancedARViewe
             <Button
               size="sm"
               variant="secondary"
-              className="bg-white/90 backdrop-blur-sm"
+              className="bg-white/90 backdrop-blur-sm hover:bg-white"
               onClick={toggleFullscreen}
             >
               <Maximize className="w-4 h-4 mr-1" />
               Fullscreen
+            </Button>
+          </div>
+
+          {/* Control Toggle Button */}
+          <div className="absolute top-4 right-4">
+            <Button
+              size="sm"
+              variant="ghost"
+              className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white"
+              onClick={toggleControls}
+            >
+              <Eye className="w-4 h-4" />
             </Button>
           </div>
         </div>
